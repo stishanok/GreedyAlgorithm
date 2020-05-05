@@ -1,0 +1,69 @@
+#include<iostream>
+
+const int SIZE = 5;
+
+struct Point
+{
+    int source ;
+    bool flag = false;
+};
+ 
+int mincost(Point* array, int graph[][SIZE], int searchindex) //поиск минимального расстояния
+{
+    int min = INT_MAX;
+    int index = -1;
+    
+    for (int i = 0; i < SIZE; i++)
+    {
+        if (graph[searchindex][i] != 0 && array[i].flag == 0) //если это не сама точка и если не ходили
+        {
+            if (graph[searchindex][i] < min)
+            {
+                index = i;
+                min = graph[searchindex][i];
+            }
+        }
+    }
+    
+    return index;
+}
+
+void greedy(int graph[][SIZE], int start)
+{
+    Point array[SIZE]; //массив для хранения расстояний и меток хождений
+    array[start].flag = true; //т.к. побывали в точке, то меняем флаг
+    int step = mincost(array, graph, start); //нахождение следующей точки
+    int index1 = start, index, cost = 0;
+    
+    while (step != -1)
+    {
+        cost += graph[start][step];
+        std::cout << "(" << start << "," << step << ")" << " ";
+        array[step].source = start;
+        start = step;
+        array[start].flag = true;
+        index = step;
+        step = mincost(array, graph, start);
+    }
+    
+    std::cout << cost + graph[index][index1] << "\n";
+}
+
+int main()
+{
+    int  graph[SIZE][SIZE]{ {0,10,25,25,10},
+                            {1,0,10,15,2},
+                            {8,9,0,20,10},
+                            {14,10,24,0,15},
+                            {10,8,25,27,0} };
+    
+    
+    for (int i = 0; i < SIZE; i++)
+    {
+        greedy(graph, i);
+        
+    }
+    
+    system("pause");
+    return 0;
+}
